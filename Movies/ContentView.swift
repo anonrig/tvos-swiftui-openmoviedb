@@ -9,6 +9,37 @@ import SwiftUI
 import Combine
 import Hover
 import KingfisherSwiftUI
+import struct Kingfisher.ResizingImageProcessor
+
+struct MovieSection: View {
+  let title: String
+  let movies: [Movie]
+  
+  @Binding var presentingMovie: Movie?
+  
+  var body: some View {
+    VStack {
+      Text(title)
+        .font(.largeTitle)
+        .padding()
+      
+      ScrollView(.horizontal) {
+        LazyHStack(spacing: 0) {
+          ForEach(movies) { movie in
+            Button(action: { presentingMovie = movie }) {
+              MovieCard(movie: movie)
+            }
+            .buttonStyle(CardButtonStyle())
+            .padding(75)
+          }
+        }
+        .padding(-40)
+      }
+    }
+    .listRowInsets(.init())
+    .listRowBackground(Color.clear)
+  }
+}
 
 struct ContentView: View {
   
@@ -18,47 +49,21 @@ struct ContentView: View {
   
   var body: some View {
     List {
-      Text("Star Wars Movies")
-        .font(.largeTitle)
-        .padding()
-        .listRowInsets(.init())
-        .listRowBackground(Color.clear)
+      MovieSection(title: "Star Wars Movies", movies: viewModel.starwars, presentingMovie: $presentingMovie)
+        
+      MovieSection(title: "Marvel Movies", movies: viewModel.marvel, presentingMovie: $presentingMovie)
       
-      ScrollView(.horizontal) {
-        LazyHStack(spacing: 0) {
-          ForEach(viewModel.starwars) { movie in
-            Button(action: { presentingMovie = movie }) {
-              MovieCard(movie: movie)
-            }
-            .buttonStyle(CardButtonStyle())
-            .padding(75)
-          }
-        }
-        .padding(-40)
-      }
-      .listRowInsets(.init())
-      .listRowBackground(Color.clear)
+      MovieSection(title: "Star Wars Movies", movies: viewModel.starwars, presentingMovie: $presentingMovie)
       
-      Text("Marvel Movies")
-        .font(.largeTitle)
-        .padding()
-        .listRowInsets(.init())
-        .listRowBackground(Color.clear)
+      MovieSection(title: "Marvel Movies", movies: viewModel.marvel, presentingMovie: $presentingMovie)
       
-      ScrollView(.horizontal) {
-        LazyHStack(spacing: 20) {
-          ForEach(viewModel.marvel) { movie in
-            Button(action: { presentingMovie = movie }) {
-              MovieCard(movie: movie)
-            }
-            .buttonStyle(CardButtonStyle())
-            .padding(75)
-          }
-        }
-        .padding(-40)
-      }
-      .listRowInsets(.init())
-      .listRowBackground(Color.clear)
+      MovieSection(title: "Star Wars Movies", movies: viewModel.starwars, presentingMovie: $presentingMovie)
+      
+      MovieSection(title: "Marvel Movies", movies: viewModel.marvel, presentingMovie: $presentingMovie)
+      
+      MovieSection(title: "Star Wars Movies", movies: viewModel.starwars, presentingMovie: $presentingMovie)
+      
+      MovieSection(title: "Marvel Movies", movies: viewModel.marvel, presentingMovie: $presentingMovie)
     }
     .sheet(item: $presentingMovie, onDismiss: { presentingMovie = nil }) { movie in
       VStack {
@@ -71,9 +76,11 @@ struct ContentView: View {
 struct MovieCard: View {
   let movie: Movie
   
+  private let processor = ResizingImageProcessor(referenceSize: .init(width: 500, height: 500), mode: .aspectFill)
+
   var body: some View {
     ZStack {
-      KFImage(movie.posterUrl)
+      KFImage(movie.posterUrl, options: [.processor(processor)])
         .resizable()
         .frame(width: 500, height: 500)
         .scaledToFill()

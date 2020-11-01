@@ -11,25 +11,17 @@ struct TabbarView: View {
   
   var body: some View {
     TabView {
-      NavigationView {
-        ContentView().navigationBarHidden(true)
-      }
+      ContentView()
         .tabItem {
           Text("Movies 1")
         }
         .tag("movies-1")
-        .id("movies-1")
       
-      NavigationView {
-        ContentView().navigationBarHidden(true)
-      }
+      ContentView()
         .tabItem {
           Text("Movies 2")
         }
         .tag("movies-2")
-        .id("movies-2")
     }
-    .navigationViewStyle(StackNavigationViewStyle())
-    .edgesIgnoringSafeArea(.all)
   }
 }
