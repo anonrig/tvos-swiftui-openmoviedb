@@ -14,6 +14,8 @@ struct ContentView: View {
   
   @ObservedObject var viewModel: ViewModel = .init()
   
+  @State var presentingMovie: Movie? = nil
+  
   var body: some View {
     List {
       Text("Star Wars Movies")
@@ -25,7 +27,7 @@ struct ContentView: View {
       ScrollView(.horizontal) {
         LazyHStack(spacing: 0) {
           ForEach(viewModel.starwars) { movie in
-            Button(action: {}) {
+            Button(action: { presentingMovie = movie }) {
               MovieCard(movie: movie)
             }
             .buttonStyle(CardButtonStyle())
@@ -46,7 +48,7 @@ struct ContentView: View {
       ScrollView(.horizontal) {
         LazyHStack(spacing: 20) {
           ForEach(viewModel.marvel) { movie in
-            Button(action: {}) {
+            Button(action: { presentingMovie = movie }) {
               MovieCard(movie: movie)
             }
             .buttonStyle(CardButtonStyle())
@@ -57,6 +59,11 @@ struct ContentView: View {
       }
       .listRowInsets(.init())
       .listRowBackground(Color.clear)
+    }
+    .sheet(item: $presentingMovie, onDismiss: { presentingMovie = nil }) { movie in
+      VStack {
+        Text(movie.Title).font(.largeTitle)
+      }
     }
   }
 }
